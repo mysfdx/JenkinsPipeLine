@@ -41,7 +41,7 @@ node {
                 scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
             }
             def jsonSlurper = new JsonSlurperClassic()
-            def robj = jsonSlurper.parseText(rmsg)
+            def robj = jsonSlurper.parseText(scratchorg)
             if (robj.status != 0) {
                 error 'org creation failed: ' + robj.message
             }
