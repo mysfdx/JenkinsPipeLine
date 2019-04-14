@@ -39,7 +39,7 @@ node {
         println(' Creating Scratch ORG..')
         scratchorg =  sh returnStdout: true,  script : "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
         println(' Convert SFDC Project to normal project')
-        srccode = sh returnStdout: true, script : "sfdx force:mdapi:convert -d src -r force-app"
+        srccode = sh returnStdout: true, script : "sfdx force:source:convert -r force-app -d ./src"
         println(' Deploy the code into Scratch ORG.')
         sourcepush = sh returnStdout: true, script : "sfdx force:mdapi:deploy -d ./src -u ${HUB_ORG}"
         println(' Assign the Permission Set to the New user ')
@@ -51,8 +51,9 @@ node {
 			   //rmsg = bat returnStdout: true, script: "sfdx force:mdapi:deploy -d manifest/. -u ${HUB_ORG}"
         println(' Creating Scratch ORG..')
         scratchorg =  bat returnStdout: true,  script : "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
-        println(' Convert SFDC Project to normal project')
-        srccode = bat returnStdout: true, script : "sfdx force:mdapi:convert -d src -r force-app"
+        println(scratchorg)
+	println(' Convert SFDC Project to normal project')
+        srccode = bat returnStdout: true, script : "sfdx force:source:convert -r force-app -d ./src"
         println(' Deploy the code into Scratch ORG.')
         sourcepush = bat returnStdout: true, script : "sfdx force:mdapi:deploy -d ./src -u ${HUB_ORG}"
         println(' Assign the Permission Set to the New user ')
