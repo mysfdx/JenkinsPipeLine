@@ -98,11 +98,13 @@ sfdx force:data:tree:import --plan ./data/data-plan.json
 # Resources: - 
 [Salesforce Doc](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ci_jenkins.htm)
 
-[Apex Hours](http://amitsalesforce.blogspot.com/2019/01/continuous-integration-using-jenkins-with-salesforceDx.html)
+[Apex Hours Article](http://amitsalesforce.blogspot.com/2019/01/continuous-integration-using-jenkins-with-salesforceDx.html)
 
-[Open SSL](https://sourceforge.net/projects/openssl/)
+[Download Open SSL](https://sourceforge.net/projects/openssl/)
 
-[JenkinsFile](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ci_jenkins_sample_walkthrough.htm)
+[Jenkins WalkThrough](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ci_jenkins_sample_walkthrough.htm)
+
+[Jenkins File Sample](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_ci_jenkins_code.htm)
 
 [ConnectedApp](https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_auth_connected_app.htm)
 
