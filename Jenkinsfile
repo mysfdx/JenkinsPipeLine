@@ -42,6 +42,7 @@ node {
             }
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
+            println(robj);
             if (robj.status != 0) {
                 error 'org creation failed: ' + robj.message
             }
