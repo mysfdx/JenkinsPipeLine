@@ -40,6 +40,7 @@ node {
             } else {
                 scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
             }
+            println(scratchorg)
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
             println(robj);
