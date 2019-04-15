@@ -90,6 +90,16 @@ node {
                 permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ci-cd-org"
             }*/
             println(sourcepush)
+            if(isUnix()){
+                println('Checking Deployment Status');
+                statusDep = sh returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG}"
+            }else{
+                println('Checking Deployment Status');
+                statusDep = bat returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG}"
+            }
+            println(' Deployment Status ')
+            println(statusDep)
+            
             if (sourcepush != 0) {
                 error 'push failed'
             }
@@ -110,6 +120,14 @@ node {
             if (dataimport != 0) {
                 error 'import failed'
             }
+        }
+        stage('RUN Test Cases') {
+            if (isUnix()) {
+                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --outputdir ${RUN_ARTIFACT_DIR} --resultformat tap -u ${HUB_ORG}"
+            } else {
+                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --outputdir ${RUN_ARTIFACT_DIR} --resultformat tap -u ${HUB_ORG}"
+            }
+            println(testStatus)
         }
         stage('Open test ORG') {
             if (isUnix()) {
