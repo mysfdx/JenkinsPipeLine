@@ -139,7 +139,7 @@ node {
             }
             println(dataimport)
             if (dataimport != 0) {
-                error 'import failed'
+                println(dataimport)
             }
         }
         stage('RUN Test Cases') {
