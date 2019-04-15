@@ -43,7 +43,7 @@ node {
             }
             println('scratchorg')
             println(scratchorg)
-            def jsonSlurper = new JsonSlurperClassic()
+            /*def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
             println('rObj');
             println(robj);
@@ -52,7 +52,7 @@ node {
             }
             SFDC_USERNAME = robj.result.username
             println(SFDC_USERNAME)
-            robj = null
+            robj = null*/
         }
         stage('Push To Test Org') {
             if (isUnix()) {
