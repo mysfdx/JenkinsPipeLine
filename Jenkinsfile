@@ -137,18 +137,18 @@ node {
                 println(' importing data to test org.')
                 dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG} --json"
             }
-            println(dataimport)
+            //println(dataimport)
             if (dataimport != 0) {
-                println(dataimport)
+                println(dataimport.status)
             }
         }
         stage('Run Local Test Classes') {
             if (isUnix()) {
                 testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests -u ${HUB_ORG}"
             } else {
-                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests -u ${HUB_ORG} --json"
+                //testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests -u ${HUB_ORG} --json"
             }
-            println(testStatus)
+            //println(testStatus)
         }
         stage('Open Target ORG') {
             if (isUnix()) {
