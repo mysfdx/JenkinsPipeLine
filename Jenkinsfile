@@ -19,7 +19,6 @@ node {
     println CONNECTED_APP_CONSUMER_KEY
 
     stage('checkout source code ') {
-        // when running in multi-branch job, one must issue this command
         checkout scm
     }
 
@@ -36,13 +35,13 @@ node {
             }
 
             println(rc)
-            if (isUnix()) {
+            /*if (isUnix()) {
                 scratchorg = sh returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
             } else {
                 scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
             }
             println('scratchorg')
-            println(scratchorg)
+            println(scratchorg)*/
             /*def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
             println('rObj');
@@ -54,8 +53,32 @@ node {
             println(SFDC_USERNAME)
             robj = null*/
         }
-        stage('Push To Test Org') {
+        stage('Convert Salesforce DX and Store in SRC Folder') {
             if (isUnix()) {
+                println(' Convert SFDC Project to normal project')
+                srccode = sh returnStdout: true, script : "sfdx force:source:convert -r force-app -d ./src"
+            } else {
+                println(' Convert SFDC Project to normal project')
+                srccode = bat returnStdout: true, script : "sfdx force:source:convert -r force-app -d ./src"
+            }
+            println(srccode)
+        }
+        stage('Push To Target Org') {
+            if(isUnix()){
+                println(' Deploy the code into Scratch ORG.')
+                sourcepush = sh returnStdout: true, script : "sfdx force:mdapi:deploy -d ./src -u ${HUB_ORG}"
+            }else{
+                println(' Deploy the code into Scratch ORG.')
+                sourcepush = bat returnStdout: true, script : "sfdx force:mdapi:deploy -d ./src -u ${HUB_ORG}"
+            }
+            if(isUnix()){
+                println(' Assign the Permission Set to the New user ')
+                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+            }else{
+                println(' Assign the Permission Set to the New user ')
+                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+            }
+            /*if (isUnix()) {
                 println(' Deploy the code into Scratch ORG.')
                 sourcepush = sh returnStdout: true, script: "sfdx force:source:push -u ci-cd-org"
                 println(' Assign the Permission Set to the New user ')
@@ -65,11 +88,12 @@ node {
                 sourcepush = bat returnStdout: true, script: "sfdx force:source:push -u ci-cd-org"
                 println(' Assign the Permission Set to the New user ')
                 permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ci-cd-org"
-            }
+            }*/
+            println(sourcepush)
             if (sourcepush != 0) {
                 error 'push failed'
             }
-
+            println(permset)
             if (permset != 0) {
                 error 'permission set assignment failed'
             }
@@ -77,10 +101,10 @@ node {
         stage('Import Data to test ORG') {
             if (isUnix()) {
                 println(' importing data to test org')
-                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ci-cd-org"
+                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG}"
             } else {
                 println(' importing data to test org.')
-                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ci-cd-org"
+                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG}"
             }
             println(dataimport)
             if (dataimport != 0) {
@@ -89,10 +113,11 @@ node {
         }
         stage('Open test ORG') {
             if (isUnix()) {
-                openorg = sh returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
+                openorg = sh returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG}"
             } else {
-                openorg = bat returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
+                openorg = bat returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG}"
             }
+            println(openorg)
         }
     }
 }
