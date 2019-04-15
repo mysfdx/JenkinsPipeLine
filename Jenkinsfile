@@ -105,11 +105,11 @@ node {
             println('rObj');
             println(robj);
             if (robj.status != 0) {
-                //error 'org creation failed: ' + robj.message
+                println(robj.message)
             }
             SFDC_USERNAME = robj.status
             println(SFDC_USERNAME)
-            robj = null*/
+            robj = null
             
             if (sourcepush != 0) {
                 //error 'push failed'
