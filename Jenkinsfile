@@ -100,7 +100,7 @@ node {
             println(' Deployment Status ')
             println(statusDep)
             
-            def jsonSlurper = new JsonSlurperClassic()
+            /*def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(statusDep.toString())
             println('rObj');
             println(robj);
@@ -109,7 +109,7 @@ node {
             }
             SFDC_USERNAME = robj.status
             println(SFDC_USERNAME)
-            robj = null
+            robj = null*/
             
             if (sourcepush != 0) {
                 //error 'push failed'
