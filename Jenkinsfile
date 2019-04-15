@@ -101,7 +101,7 @@ node {
             println(statusDep)
             
             def jsonSlurper = new JsonSlurperClassic()
-            def robj = jsonSlurper.parseText(statusDep)
+            def robj = jsonSlurper.parseText(statusDep.toString())
             println('rObj');
             println(robj);
             if (robj.status != 0) {
