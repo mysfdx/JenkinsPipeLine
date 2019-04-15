@@ -30,15 +30,16 @@ node {
             } else {
                 rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
             }
+            
             if (rc != 0) {
                 error 'hub org authorization failed'
             }
 
             println(rc)
             if (isUnix()) {
-                scratchorg = sh returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
+                scratchorg = sh returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
             } else {
-                scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json -a ci-cd-org -s -w 10 -d 30"
+                scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
             }
             println(scratchorg)
             def jsonSlurper = new JsonSlurperClassic()
@@ -86,9 +87,9 @@ node {
         }
         stage('Open test ORG') {
             if (isUnix()) {
-                dataimport = sh returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
+                openorg = sh returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
             } else {
-                dataimport = bat returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
+                openorg = bat returnStdout: true, script: "sfdx force:org:open -u ${SFDC_USERNAME}"
             }
         }
     }
