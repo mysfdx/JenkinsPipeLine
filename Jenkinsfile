@@ -26,18 +26,26 @@ node {
     withCredentials([file(credentialsId: JWT_KEY_CRED_ID, variable: 'jwt_key_file')]) {
         stage('Create Scratch Org') {
             if (isUnix()) {
-                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                rc = sh returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile ${jwt_key_file} -d --instanceurl ${SFDC_HOST}"
             } else {
-                rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" --setdefaultdevhubusername --instanceurl ${SFDC_HOST}"
+                rc = bat returnStatus: true, script: "sfdx force:auth:jwt:grant --clientid ${CONNECTED_APP_CONSUMER_KEY} --username ${HUB_ORG} --jwtkeyfile \"${jwt_key_file}\" -d --instanceurl ${SFDC_HOST}"
             }
             
             if (rc != 0) {
                 error 'hub org authorization failed'
             }
 
-            def scratchorg = '{"status": 0,"result": {"orgId": "00DN0000000ExbRMAS","username": "test-of3ojouirioa@example.com"}}'
+            println(rc)
+            if (isUnix()) {
+                scratchorg = sh returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
+            } else {
+                scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
+            }
+            println('scratchorg')
+            println(scratchorg)
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
+            println('rObj');
             println(robj);
             if (robj.status != 0) {
                 error 'org creation failed: ' + robj.message
@@ -49,14 +57,14 @@ node {
         stage('Push To Test Org') {
             if (isUnix()) {
                 println(' Deploy the code into Scratch ORG.')
-                sourcepush = sh returnStdout: true, script: "sfdx force:source:push -u ${SFDC_USERNAME}"
+                sourcepush = sh returnStdout: true, script: "sfdx force:source:push -u ci-cd-org"
                 println(' Assign the Permission Set to the New user ')
-                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${SFDC_USERNAME}"
+                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ci-cd-org"
             } else {
                 println(' Deploy the code into Scratch ORG.')
-                sourcepush = bat returnStdout: true, script: "sfdx force:source:push -u ${SFDC_USERNAME}"
+                sourcepush = bat returnStdout: true, script: "sfdx force:source:push -u ci-cd-org"
                 println(' Assign the Permission Set to the New user ')
-                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${SFDC_USERNAME}"
+                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ci-cd-org"
             }
             if (sourcepush != 0) {
                 error 'push failed'
@@ -69,10 +77,10 @@ node {
         stage('Import Data to test ORG') {
             if (isUnix()) {
                 println(' importing data to test org')
-                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${SFDC_USERNAME}"
+                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ci-cd-org"
             } else {
                 println(' importing data to test org.')
-                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${SFDC_USERNAME}"
+                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ci-cd-org"
             }
             println(dataimport)
             if (dataimport != 0) {
