@@ -35,13 +35,7 @@ node {
                 error 'hub org authorization failed'
             }
 
-            println(rc)
-            if (isUnix()) {
-                scratchorg = sh returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
-            } else {
-                scratchorg = bat returnStdout: true, script: "sfdx force:org:create -f ./config/project-scratch-def.json --json -a ci-cd-org -s -w 10 -d 30"
-            }
-            println(scratchorg)
+            def scratchorg = '{"status": 0,"result": {"orgId": "00DN0000000ExbRMAS","username": "test-of3ojouirioa@example.com"}}'
             def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(scratchorg)
             println(robj);
