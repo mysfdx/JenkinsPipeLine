@@ -92,20 +92,31 @@ node {
             println(sourcepush)
             if(isUnix()){
                 println('Checking Deployment Status');
-                statusDep = sh returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG}"
+                statusDep = sh returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG} --json"
             }else{
                 println('Checking Deployment Status');
-                statusDep = bat returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG}"
+                statusDep = bat returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG} --json"
             }
             println(' Deployment Status ')
             println(statusDep)
             
+            def jsonSlurper = new JsonSlurperClassic()
+            def robj = jsonSlurper.parseText(statusDep)
+            println('rObj');
+            println(robj);
+            if (robj.status != 0) {
+                //error 'org creation failed: ' + robj.message
+            }
+            SFDC_USERNAME = robj.status
+            println(SFDC_USERNAME)
+            robj = null*/
+            
             if (sourcepush != 0) {
-                error 'push failed'
+                //error 'push failed'
             }
             println(permset)
             if (permset != 0) {
-                error 'permission set assignment failed'
+                //error 'permission set assignment failed'
             }
         }
         stage('Import Data to test ORG') {
