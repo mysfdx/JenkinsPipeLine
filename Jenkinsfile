@@ -71,13 +71,6 @@ node {
                 println(' Deploy the code into Scratch ORG.')
                 sourcepush = bat returnStdout: true, script : "sfdx force:mdapi:deploy -d ./src -u ${HUB_ORG}"
             }
-            if(isUnix()){
-                println(' Assign the Permission Set to the New user ')
-                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
-            }else{
-                println(' Assign the Permission Set to the New user ')
-                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
-            }
             /*if (isUnix()) {
                 println(' Deploy the code into Scratch ORG.')
                 sourcepush = sh returnStdout: true, script: "sfdx force:source:push -u ci-cd-org"
@@ -100,6 +93,14 @@ node {
             println(' Deployment Status ')
             println(statusDep)
             
+            if(isUnix()){
+                println('Checking Deployment Status');
+                statusDep1 = sh returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG} --json"
+            }else{
+                println('Checking Deployment Status');
+                statusDep1 = bat returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG} --json"
+            }
+            
             /*def jsonSlurper = new JsonSlurperClassic()
             def robj = jsonSlurper.parseText(statusDep.toString())
             println('rObj');
@@ -114,6 +115,15 @@ node {
             if (sourcepush != 0) {
                 //error 'push failed'
             }
+            
+            if(isUnix()){
+                println(' Assign the Permission Set to the New user ')
+                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+            }else{
+                println(' Assign the Permission Set to the New user ')
+                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+            }
+            
             println(permset)
             if (permset != 0) {
                 //error 'permission set assignment failed'
