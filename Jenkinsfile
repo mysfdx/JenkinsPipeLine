@@ -118,10 +118,10 @@ node {
             
             if(isUnix()){
                 println(' Assign the Permission Set to the New user ')
-                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+                permset = sh returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG} --json"
             }else{
                 println(' Assign the Permission Set to the New user ')
-                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG}"
+                permset = bat returnStdout: true, script: "sfdx force:user:permset:assign -n yeurdreamin -u ${HUB_ORG} --json"
             }
             
             println(permset)
@@ -132,29 +132,29 @@ node {
         stage('Import Data to test ORG') {
             if (isUnix()) {
                 println(' importing data to test org')
-                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG}"
+                dataimport = sh returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG} --json"
             } else {
                 println(' importing data to test org.')
-                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG}"
+                dataimport = bat returnStdout: true, script: "sfdx force:data:tree:import --plan ./data/data-plan.json -u ${HUB_ORG} --json"
             }
             println(dataimport)
             if (dataimport != 0) {
                 println(dataimport)
             }
         }
-        stage('RUN Test Cases') {
+        stage('Run Local Test Classes') {
             if (isUnix()) {
-                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --outputdir ${RUN_ARTIFACT_DIR} --resultformat tap -u ${HUB_ORG}"
+                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --json --resultformat tap -u ${HUB_ORG}"
             } else {
-                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --outputdir ${RUN_ARTIFACT_DIR} --resultformat tap -u ${HUB_ORG}"
+                testStatus = sh returnStdout: true, script: "sfdx force:apex:test:run --testlevel RunLocalTests --resultformat tap -u ${HUB_ORG} --json"
             }
             println(testStatus)
         }
-        stage('Open test ORG') {
+        stage('Open Target ORG') {
             if (isUnix()) {
-                openorg = sh returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG}"
+                openorg = sh returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG} --json" 
             } else {
-                openorg = bat returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG}"
+                openorg = bat returnStdout: true, script: "sfdx force:org:open -u ${HUB_ORG} --json"
             }
             println(openorg)
         }
