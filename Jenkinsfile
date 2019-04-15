@@ -139,7 +139,7 @@ node {
             }
             //println(dataimport)
             if (dataimport != 0) {
-                println(dataimport.status)
+                println(dataimport)
             }
         }
         stage('Run Local Test Classes') {
