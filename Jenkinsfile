@@ -92,10 +92,13 @@ node {
             }
             println(' Deployment Status ')
             println(statusDep)
+            
             if(isUnix()){
-                sleep60 = sh returnStdout: true, scrtpt : "sleep 60"
+                println('Waiting For 60 Seconds')
+                sleep 60
             }else{
-                sleep60 = bat returnStdout: true, scrtpt : "sleep 60"
+                println('Waiting For 60 Seconds')
+                sleep 60
             }
             
             if(isUnix()){
@@ -105,7 +108,7 @@ node {
                 println('Checking Deployment Status Again');
                 statusDep1 = bat returnStdout: true, script: "sfdx force:mdapi:deploy:report -u ${HUB_ORG} --json"
             }
-            
+            println('Updated Deployment Status')
             println(statusDep1)
             
             /*def jsonSlurper = new JsonSlurperClassic()
