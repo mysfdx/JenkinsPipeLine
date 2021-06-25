@@ -30,6 +30,7 @@ jobs:
       run: ant -noinput -buildfile build.xml
   test:
     name: test
+    needs: [build]
     runs-on: ubuntu-latest
     steps:
     - uses: actions/checkout@v2
